@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:hive_flutter/hive_flutter.dart';
+import 'package:simple_todo/data/database.dart';
 import '../widgets/todo_tile.dart';
 import '../widgets/dialog_box.dart';
 
@@ -12,28 +14,36 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
+  final _myBox = Hive.box('simTodo');
+
+  TodoDatabase todoDB = TodoDatabase();
+
   final _controller = TextEditingController();
-  List todoList = [];
 
   checkBoxChanged(bool? value, int index) {
     setState(() {
-      todoList[index][1] = !todoList[index][1];
+      todoDB.todoList[index][1] = !todoDB.todoList[index][1];
     });
+    todoDB.updateDatabase();
   }
 
   saveNewTask() {
     setState(() {
       if (_controller.text.length > 25) {
-        todoList.add([_controller.text.substring(0, 25), false]);
+        todoDB.todoList.add([_controller.text.substring(0, 25), false]);
       } else {
-        todoList.add([_controller.text, false]);
+        todoDB.todoList.add([_controller.text, false]);
       }
       _controller.clear();
     });
+    todoDB.updateDatabase();
     Navigator.of(context).pop();
   }
 
   createNewTask() {
+    setState(() {
+      _controller.clear();
+    });
     showDialog(
       context: context,
       builder: (context) {
@@ -50,8 +60,19 @@ class _HomeState extends State<Home> {
 
   deleteTask(int index) {
     setState(() {
-      todoList.removeAt(index);
+      todoDB.todoList.removeAt(index);
     });
+    todoDB.updateDatabase();
+  }
+
+  @override
+  void initState() {
+    if (_myBox.get('TODOLIST') == null) {
+      todoDB.createInitialData();
+    } else {
+      todoDB.loadData();
+    }
+    super.initState();
   }
 
   @override
@@ -64,8 +85,8 @@ class _HomeState extends State<Home> {
       body: ListView.builder(
         itemBuilder: (context, index) {
           return TodoTile(
-            taskName: todoList[index][0],
-            taskStatus: todoList[index][1],
+            taskName: todoDB.todoList[index][0],
+            taskStatus: todoDB.todoList[index][1],
             onChanged: (value) => checkBoxChanged(
               value,
               index,
@@ -75,7 +96,7 @@ class _HomeState extends State<Home> {
             },
           );
         },
-        itemCount: todoList.length,
+        itemCount: todoDB.todoList.length,
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: createNewTask,
