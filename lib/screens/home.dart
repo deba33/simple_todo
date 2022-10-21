@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
-import 'package:simple_todo/data/database.dart';
+
+import '../data/database.dart';
 import '../widgets/todo_tile.dart';
-import '../widgets/dialog_box.dart';
 
 class Home extends StatefulWidget {
   const Home({
@@ -14,11 +14,10 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
-  final _myBox = Hive.box('simTodo');
+  final _myBox = Hive.box('mybox');
+  final _controller = TextEditingController();
 
   TodoDatabase todoDB = TodoDatabase();
-
-  final _controller = TextEditingController();
 
   checkBoxChanged(bool? value, int index) {
     setState(() {
@@ -29,33 +28,18 @@ class _HomeState extends State<Home> {
 
   saveNewTask() {
     setState(() {
-      if (_controller.text.length > 25) {
-        todoDB.todoList.add([_controller.text.substring(0, 25), false]);
+      if (_controller.text.trim().isEmpty) {
+        return;
+      }
+      if (_controller.text.trim().length > 25) {
+        todoDB.todoList.add([_controller.text.trim().substring(0, 25), false]);
       } else {
-        todoDB.todoList.add([_controller.text, false]);
+        todoDB.todoList.add([_controller.text.trim(), false]);
       }
       _controller.clear();
     });
+    FocusScope.of(context).unfocus();
     todoDB.updateDatabase();
-    Navigator.of(context).pop();
-  }
-
-  createNewTask() {
-    setState(() {
-      _controller.clear();
-    });
-    showDialog(
-      context: context,
-      builder: (context) {
-        return DialogBox(
-          controller: _controller,
-          onSaved: saveNewTask,
-          onCancelled: () {
-            Navigator.of(context).pop();
-          },
-        );
-      },
-    );
   }
 
   deleteTask(int index) {
@@ -82,25 +66,60 @@ class _HomeState extends State<Home> {
         centerTitle: true,
         title: const Text('TODO'),
       ),
-      body: ListView.builder(
-        itemBuilder: (context, index) {
-          return TodoTile(
-            taskName: todoDB.todoList[index][0],
-            taskStatus: todoDB.todoList[index][1],
-            onChanged: (value) => checkBoxChanged(
-              value,
-              index,
-            ),
-            deleteTask: (context) {
-              deleteTask(index);
-            },
-          );
-        },
-        itemCount: todoDB.todoList.length,
+      body: Padding(
+        padding: const EdgeInsets.only(
+          bottom: 90,
+        ),
+        child: ListView.builder(
+          itemBuilder: (context, index) {
+            return TodoTile(
+              taskName: todoDB.todoList[index][0],
+              taskStatus: todoDB.todoList[index][1],
+              onChanged: (value) => checkBoxChanged(
+                value,
+                index,
+              ),
+              deleteTask: (context) {
+                deleteTask(index);
+              },
+            );
+          },
+          itemCount: todoDB.todoList.length,
+        ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: createNewTask,
-        child: const Icon(Icons.add),
+      bottomSheet: Container(
+        height: 75,
+        padding: const EdgeInsets.all(10),
+        margin: const EdgeInsets.all(5),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            SizedBox(
+              width: 300,
+              child: TextField(
+                textInputAction: TextInputAction.done,
+                onEditingComplete: saveNewTask,
+                controller: _controller,
+                decoration: const InputDecoration(
+                  border: OutlineInputBorder(),
+                  hintText: 'Add a new task',
+                ),
+              ),
+            ),
+            GestureDetector(
+              onTap: saveNewTask,
+              child: Container(
+                width: 75,
+                height: double.maxFinite,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(5),
+                  color: Theme.of(context).primaryColor.withOpacity(0.4),
+                ),
+                child: const Icon(Icons.add),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

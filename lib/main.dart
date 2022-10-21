@@ -4,7 +4,7 @@ import './screens/home.dart';
 
 void main() async {
   await Hive.initFlutter();
-  var box = await Hive.openBox('simTodo');
+  await Hive.openBox('mybox');
   runApp(const MyApp());
 }
 
@@ -15,12 +15,16 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      title: 'Flutter Demo',
+      title: 'Simple TODO',
       theme: ThemeData(
+        primaryColor: Colors.amberAccent,
         brightness: Brightness.light,
+        useMaterial3: true,
       ),
       darkTheme: ThemeData(
+        primaryColor: Colors.amber,
         brightness: Brightness.dark,
+        useMaterial3: true,
       ),
       home: const Home(),
     );

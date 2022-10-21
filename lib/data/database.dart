@@ -2,7 +2,7 @@ import 'package:hive_flutter/hive_flutter.dart';
 
 class TodoDatabase {
   List todoList = [];
-  final _myBox = Hive.box('simTodo');
+  final _myBox = Hive.box('mybox');
 
   createInitialData() {
     todoList = [
