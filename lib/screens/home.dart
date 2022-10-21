@@ -3,6 +3,7 @@ import 'package:hive_flutter/hive_flutter.dart';
 
 import '../data/database.dart';
 import '../widgets/todo_tile.dart';
+import '../widgets/bottom_sheet.dart';
 
 class Home extends StatefulWidget {
   const Home({
@@ -14,25 +15,26 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
+  // opening hive box
   final _myBox = Hive.box('mybox');
+  // text controller
   final _controller = TextEditingController();
-
+  // database class
   TodoDatabase todoDB = TodoDatabase();
 
-  checkBoxChanged(bool? value, int index) {
+  // function for checkbox clicking
+  _checkBoxChanged(bool? value, int index) {
     setState(() {
       todoDB.todoList[index][1] = !todoDB.todoList[index][1];
     });
     todoDB.updateDatabase();
   }
 
-  saveNewTask() {
+  // function for adding and saving new task
+  _saveNewTask() {
     setState(() {
       if (_controller.text.trim().isEmpty) {
         return;
-      }
-      if (_controller.text.trim().length > 25) {
-        todoDB.todoList.add([_controller.text.trim().substring(0, 25), false]);
       } else {
         todoDB.todoList.add([_controller.text.trim(), false]);
       }
@@ -42,7 +44,8 @@ class _HomeState extends State<Home> {
     todoDB.updateDatabase();
   }
 
-  deleteTask(int index) {
+  // function for deleting task
+  _deleteTask(int index) {
     setState(() {
       todoDB.todoList.removeAt(index);
     });
@@ -75,51 +78,21 @@ class _HomeState extends State<Home> {
             return TodoTile(
               taskName: todoDB.todoList[index][0],
               taskStatus: todoDB.todoList[index][1],
-              onChanged: (value) => checkBoxChanged(
+              onChanged: (value) => _checkBoxChanged(
                 value,
                 index,
               ),
               deleteTask: (context) {
-                deleteTask(index);
+                _deleteTask(index);
               },
             );
           },
           itemCount: todoDB.todoList.length,
         ),
       ),
-      bottomSheet: Container(
-        height: 75,
-        padding: const EdgeInsets.all(10),
-        margin: const EdgeInsets.all(5),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            SizedBox(
-              width: 300,
-              child: TextField(
-                textInputAction: TextInputAction.done,
-                onEditingComplete: saveNewTask,
-                controller: _controller,
-                decoration: const InputDecoration(
-                  border: OutlineInputBorder(),
-                  hintText: 'Add a new task',
-                ),
-              ),
-            ),
-            GestureDetector(
-              onTap: saveNewTask,
-              child: Container(
-                width: 75,
-                height: double.maxFinite,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(5),
-                  color: Theme.of(context).primaryColor.withOpacity(0.4),
-                ),
-                child: const Icon(Icons.add),
-              ),
-            ),
-          ],
-        ),
+      bottomSheet: TODOBottomSheet(
+        controller: _controller,
+        saveNewTask: _saveNewTask,
       ),
     );
   }

@@ -16,56 +16,58 @@ class TodoTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(
-        top: 20,
-        left: 20,
+    return Container(
+      margin: const EdgeInsets.only(
+        top: 15,
         right: 20,
+        left: 20,
       ),
       child: Slidable(
-          endActionPane: ActionPane(
-            motion: const StretchMotion(),
-            children: [
-              SlidableAction(
-                onPressed: deleteTask,
-                icon: Icons.delete,
-                backgroundColor: Theme.of(context).errorColor,
-              ),
-            ],
-          ),
-          child: Center(
-            child: Container(
-              width: MediaQuery.of(context).size.width * 0.85,
-              padding: const EdgeInsets.all(10),
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(5),
-                color: taskStatus
-                    ? Colors.lightGreen.withAlpha(50)
-                    : Theme.of(context).primaryColor.withAlpha(50),
-              ),
-              child: Row(
-                children: [
-                  Checkbox(
-                    value: taskStatus,
-                    onChanged: onChanged,
-                    activeColor: Colors.black,
-                    checkColor: Colors.green,
-                  ),
-                  Text(
-                    taskName,
-                    textScaleFactor: 1.2,
-                    softWrap: true,
-                    maxLines: 3,
-                    overflow: TextOverflow.ellipsis,
-                    style: TextStyle(
-                      decoration:
-                          taskStatus ? TextDecoration.lineThrough : null,
-                    ),
-                  ),
-                ],
-              ),
+        endActionPane: ActionPane(
+          motion: const StretchMotion(),
+          extentRatio: 0.2,
+          children: [
+            SlidableAction(
+              borderRadius: BorderRadius.circular(5),
+              onPressed: deleteTask,
+              icon: Icons.delete,
+              backgroundColor: Theme.of(context).errorColor,
             ),
-          )),
+          ],
+        ),
+        child: Center(
+          child: Container(
+            padding: const EdgeInsets.all(5),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(5),
+              color: taskStatus
+                  ? const Color(0xFFC8E6C9)
+                  : const Color(0xFFFFECB3),
+            ),
+            child: Row(
+              children: [
+                Checkbox(
+                  value: taskStatus,
+                  onChanged: onChanged,
+                  activeColor: Colors.black,
+                  checkColor: Colors.green,
+                ),
+                Text(
+                  taskName,
+                  textScaleFactor: 1.2,
+                  softWrap: true,
+                  maxLines: 3,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(
+                    color: Colors.black,
+                    decoration: taskStatus ? TextDecoration.lineThrough : null,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
     );
   }
 }
