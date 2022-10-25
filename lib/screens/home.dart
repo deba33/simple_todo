@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_alarm_clock/flutter_alarm_clock.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 
 import '../data/database.dart';
@@ -30,13 +31,34 @@ class _HomeState extends State<Home> {
     todoDB.updateDatabase();
   }
 
+  //function for adding alarm
+  _addAlarm(String taskName) async {
+    TimeOfDay? picked = await showTimePicker(
+      context: context,
+      initialTime: TimeOfDay.now(),
+      initialEntryMode: TimePickerEntryMode.dialOnly,
+    );
+    if (picked != null) {
+      FlutterAlarmClock.createAlarm(
+        picked.hour,
+        picked.minute,
+        title: taskName,
+        skipUi: false,
+      );
+    }
+  }
+
   // function for adding and saving new task
   _saveNewTask() {
     setState(() {
       if (_controller.text.trim().isEmpty) {
         return;
       } else {
-        todoDB.todoList.add([_controller.text.trim(), false]);
+        _addAlarm(_controller.text.trim());
+        todoDB.todoList.add([
+          _controller.text.trim(),
+          false,
+        ]);
       }
       _controller.clear();
     });
@@ -68,6 +90,14 @@ class _HomeState extends State<Home> {
       appBar: AppBar(
         centerTitle: true,
         title: const Text('TODO'),
+        actions: [
+          IconButton(
+            onPressed: () {
+              FlutterAlarmClock.showAlarms();
+            },
+            icon: const Icon(Icons.alarm),
+          ),
+        ],
       ),
       body: Padding(
         padding: const EdgeInsets.only(
@@ -84,6 +114,9 @@ class _HomeState extends State<Home> {
               ),
               deleteTask: (context) {
                 _deleteTask(index);
+              },
+              addAlarm: (context) {
+                _addAlarm(todoDB.todoList[index][0]);
               },
             );
           },

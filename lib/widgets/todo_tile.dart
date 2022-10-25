@@ -6,12 +6,15 @@ class TodoTile extends StatelessWidget {
   final bool taskStatus;
   final Function(bool?)? onChanged;
   final Function(BuildContext)? deleteTask;
+  final Function(BuildContext)? addAlarm;
+
   const TodoTile({
     super.key,
     required this.taskName,
     required this.taskStatus,
     required this.onChanged,
     required this.deleteTask,
+    required this.addAlarm,
   });
 
   @override
@@ -23,9 +26,23 @@ class TodoTile extends StatelessWidget {
         left: 20,
       ),
       child: Slidable(
+        startActionPane: taskStatus
+            ? null
+            : ActionPane(
+                motion: const StretchMotion(),
+                extentRatio: 0.3,
+                children: [
+                  SlidableAction(
+                    borderRadius: BorderRadius.circular(5),
+                    onPressed: addAlarm,
+                    icon: Icons.alarm_add,
+                    backgroundColor: Theme.of(context).primaryColor,
+                  ),
+                ],
+              ),
         endActionPane: ActionPane(
           motion: const StretchMotion(),
-          extentRatio: 0.2,
+          extentRatio: 0.3,
           children: [
             SlidableAction(
               borderRadius: BorderRadius.circular(5),
