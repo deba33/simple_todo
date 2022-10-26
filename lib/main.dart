@@ -18,7 +18,7 @@ class MyApp extends StatelessWidget {
       title: 'Simple TODO',
       theme: ThemeData(
         primaryColor: Colors.amberAccent,
-        brightness: Brightness.light,
+        brightness: Brightness.dark,
         useMaterial3: true,
       ),
       home: const Home(),

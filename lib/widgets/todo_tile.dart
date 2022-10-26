@@ -55,6 +55,10 @@ class TodoTile extends StatelessWidget {
         child: Center(
           child: Container(
             padding: const EdgeInsets.all(5),
+            margin: const EdgeInsets.symmetric(
+              vertical: 0,
+              horizontal: 5,
+            ),
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(5),
               color: taskStatus
@@ -63,12 +67,42 @@ class TodoTile extends StatelessWidget {
             ),
             child: Row(
               children: [
-                Checkbox(
-                  value: taskStatus,
-                  onChanged: onChanged,
-                  activeColor: Colors.black,
-                  checkColor: Colors.green,
+                GestureDetector(
+                  onTap: () {
+                    onChanged!(taskStatus);
+                  },
+                  child: Container(
+                    margin: const EdgeInsets.only(
+                      top: 10,
+                      bottom: 10,
+                      left: 15,
+                      right: 25,
+                    ),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      border: Border.all(
+                        width: 2,
+                      ),
+                    ),
+                    height: 25,
+                    width: 25,
+                    child: taskStatus
+                        ? Center(
+                            child: Icon(
+                              Icons.done,
+                              size: 20,
+                              color: Colors.green[800],
+                            ),
+                          )
+                        : null,
+                  ),
                 ),
+                // Checkbox(
+                //   value: taskStatus,
+                //   onChanged: onChanged,
+                //   activeColor: Colors.black,
+                //   checkColor: Colors.green,
+                // ),
                 Text(
                   taskName,
                   textScaleFactor: 1.2,

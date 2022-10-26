@@ -32,7 +32,7 @@ class _HomeState extends State<Home> {
   }
 
   //function for adding alarm
-  _addAlarm(String taskName) async {
+  _addAlarm(String taskName, bool skipUI) async {
     TimeOfDay? picked = await showTimePicker(
       context: context,
       initialTime: TimeOfDay.now(),
@@ -43,7 +43,7 @@ class _HomeState extends State<Home> {
         picked.hour,
         picked.minute,
         title: taskName,
-        skipUi: false,
+        skipUi: skipUI,
       );
     }
   }
@@ -54,7 +54,10 @@ class _HomeState extends State<Home> {
       if (_controller.text.trim().isEmpty) {
         return;
       } else {
-        _addAlarm(_controller.text.trim());
+        _addAlarm(
+          _controller.text.trim(),
+          true,
+        );
         todoDB.todoList.add([
           _controller.text.trim(),
           false,
@@ -116,7 +119,10 @@ class _HomeState extends State<Home> {
                 _deleteTask(index);
               },
               addAlarm: (context) {
-                _addAlarm(todoDB.todoList[index][0]);
+                _addAlarm(
+                  todoDB.todoList[index][0],
+                  false,
+                );
               },
             );
           },

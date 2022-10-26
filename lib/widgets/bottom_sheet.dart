@@ -21,6 +21,7 @@ class TODOBottomSheet extends StatelessWidget {
         children: [
           SizedBox(
             width: 300,
+            height: 65,
             child: TextField(
               inputFormatters: [
                 LengthLimitingTextInputFormatter(35),
@@ -38,12 +39,15 @@ class TODOBottomSheet extends StatelessWidget {
             onTap: saveNewTask,
             child: Container(
               width: 75,
-              height: double.maxFinite,
+              height: 65,
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(5),
                 color: const Color(0xFFFFD54F),
               ),
-              child: const Icon(Icons.add),
+              child: const Icon(
+                Icons.add,
+                color: Colors.black,
+              ),
             ),
           ),
         ],
