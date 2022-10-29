@@ -36,7 +36,7 @@ class _HomeState extends State<Home> {
     TimeOfDay? picked = await showTimePicker(
       context: context,
       initialTime: TimeOfDay.now(),
-      initialEntryMode: TimePickerEntryMode.dialOnly,
+      initialEntryMode: TimePickerEntryMode.dial,
     );
     if (picked != null) {
       FlutterAlarmClock.createAlarm(
