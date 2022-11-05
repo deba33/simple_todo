@@ -1,6 +1,8 @@
 # simple_todo
 
-A Todo app created using Flutter, Dart, Hive
+A Todo app created using Flutter, Dart, Hive  
+[Download on Google Playstore](https://play.google.com/store/apps/details?id=com.debabrata.simpletodo)
+
 ### Inspired from Mitch Koko - [Youtube](https://youtu.be/mMgr47QBZWA) | [GitHub](https://github.com/mitchkoko/ToDoFlutter)
 - minimal UI
 - ability to add alarm while adding task or sliding task tile to right.
